@@ -23,4 +23,17 @@ public class EquipajeController : ControllerBase
         }
         return Ok(mensaje);
     }
+
+
+    [HttpGet("{idPasajero:int}")]
+
+    public ActionResult<List<Equipaje>> ObtenerEquipaje(int idPasajero)
+    {
+        var equipajes = servicio.ObtenerEquipaje(idPasajero);
+        if (equipajes == null)
+        {
+            return NotFound($"No se encontró un pasajero con el ID: {idPasajero}");
+        }
+        return Ok(equipajes);
+    }
 }

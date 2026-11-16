@@ -10,14 +10,14 @@ public class EquipajeService
         this.repositorio = repositorio;
     }
 
-    public Equipaje? ObtenerEquipaje(int idpasajero)
+    public List<Equipaje>? ObtenerEquipaje(int idpasajero)
     {
         Pasajero? pasajero = repositorio.ObtenerPorId(idpasajero);
         if (pasajero == null)
         {
             return null;
         }
-        return pasajero.Equipaje;
+        return pasajero?.getEquipajes();
     }
 
     public (bool exito, string mensaje) AgregarEquipaje(int idpasajero, EquipajeRequest datos)
@@ -27,12 +27,10 @@ public class EquipajeService
         {
             return (false, "Error al agregar el equipaje a un pasajero inexistente.");
         }
-        Equipaje nuevo;
         try
         {
-            nuevo = new Equipaje(
-                datos.Peso
-            );
+            Equipaje nuevo = new Equipaje(datos.Peso);
+            pasajero.agregarEquipaje(nuevo);
         }
         catch (DatosInvalidosException)
         {
@@ -40,7 +38,6 @@ public class EquipajeService
             return (false, "Error al agregar el equipaje al pasajero.");
         }
 
-        pasajero.Equipaje = nuevo;
         bool exito = repositorio.Actualizar(pasajero);
         if (!exito)
         {

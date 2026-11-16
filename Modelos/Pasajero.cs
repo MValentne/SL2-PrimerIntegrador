@@ -12,7 +12,9 @@ namespace CheckInApi.Modelos
         private string _apellido;
         private string _documento;
         private string _pasajeroFrecuente;
+        
         private List<Equipaje> _equipajes = new List<Equipaje>();
+        
 
         // Definición del constructor
         public Pasajero(string nombre, 
@@ -45,7 +47,23 @@ namespace CheckInApi.Modelos
 
          public Pasaje? Pasaje { get; set; }
 
-         public Equipaje? Equipaje { get; set; }
+        public IReadOnlyList<Equipaje> Equipajes => _equipajes;
+
+
+         public int MaxEquipajePermitido
+        {
+            get
+            {
+                return Pasaje?.TipoTarifa?.ToLower() switch
+                {
+                    "p" => 1, 
+                    "b" => 1, 
+                    "f" => 2, 
+                    "pe" => 3, 
+                    _ => 0
+                };
+            }
+        }
 
         public int Id { get; set; }
 
@@ -89,6 +107,14 @@ namespace CheckInApi.Modelos
 
         public void agregarEquipaje(Equipaje unEquipaje)
         {
+            if (Pasaje == null)
+            {
+                throw new DatosInvalidosException("Pasaje", "No se puede agregar equipaje a un pasajero sin pasaje.");
+            }
+            if (_equipajes.Count >= MaxEquipajePermitido)
+            {
+                throw new DatosInvalidosException("Equipaje", $"Se ha alcanzado el límite de equipaje '{MaxEquipajePermitido}' para este pasajero.");
+            }
             _equipajes.Add(unEquipaje);
         }
 
@@ -96,7 +122,8 @@ namespace CheckInApi.Modelos
         {
             return $"{Id}|{Nombre}|{Apellido}|{Documento}|{PasajeroFrecuente}" +
                    $"|{Pasaje?.TipoVuelo}|{Pasaje?.TipoTarifa}|{Pasaje?.NroVuelo}"+
-                   $"|{Equipaje?.PesoKg}";
+                   $"|{string.Join("|", _equipajes.ConvertAll(e => e.PesoKg.ToString()))}";
+
         }
 
         public static Pasajero FromString(string linea)
@@ -104,24 +131,18 @@ namespace CheckInApi.Modelos
             string[] partes = linea.Split('|');
             int id = int.Parse(partes[0]);
             Pasajero pasajero = new Pasajero(partes[1], partes[2], partes[3], partes[4], id);
-            if (partes.Length > 5 && !string.IsNullOrWhiteSpace(partes[5]) && !string.IsNullOrWhiteSpace(partes[6]) && !string.IsNullOrWhiteSpace(partes[7]))
+            if (partes.Length >= 8 
+            && !string.IsNullOrWhiteSpace(partes[5]) 
+            && !string.IsNullOrWhiteSpace(partes[6]) 
+            && !string.IsNullOrWhiteSpace(partes[7]))
             {
                 pasajero.Pasaje = new Pasaje(partes[5], partes[6], partes[7]);
             }
-            if (partes.Length > 8)
+            for (int i = 8; i < partes.Length; i++)
             {
-                for (int i = 8; i < partes.Length; i++)
+                if (double.TryParse(partes[i], out double peso))
                 {
-                    if (!string.IsNullOrWhiteSpace(partes[i]))
-                    {
-                        double peso;
-                        if (double.TryParse(partes[i], out peso))
-                        {
-                            Equipaje equipaje = new Equipaje(peso);
-                            pasajero.Equipaje = equipaje;
-                            pasajero.agregarEquipaje(equipaje);
-                        }
-                    }
+                    pasajero._equipajes.Add(new Equipaje(peso));
                 }
             }
             return pasajero;
