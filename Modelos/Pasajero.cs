@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using CheckInApi.Modelos.Exceptions;
@@ -44,6 +44,8 @@ namespace CheckInApi.Modelos
         // Definición de propiedades
 
          public Pasaje? Pasaje { get; set; }
+
+         public Equipaje? Equipaje { get; set; }
 
         public int Id { get; set; }
 
@@ -93,7 +95,8 @@ namespace CheckInApi.Modelos
         public override string ToString()
         {
             return $"{Id}|{Nombre}|{Apellido}|{Documento}|{PasajeroFrecuente}" +
-                   $"|{Pasaje?.TipoVuelo}|{Pasaje?.TipoTarifa}|{Pasaje?.NroVuelo}";
+                   $"|{Pasaje?.TipoVuelo}|{Pasaje?.TipoTarifa}|{Pasaje?.NroVuelo}"+
+                   $"|{Equipaje?.PesoKg}";
         }
 
         public static Pasajero FromString(string linea)
@@ -104,6 +107,22 @@ namespace CheckInApi.Modelos
             if (partes.Length > 5 && !string.IsNullOrWhiteSpace(partes[5]) && !string.IsNullOrWhiteSpace(partes[6]) && !string.IsNullOrWhiteSpace(partes[7]))
             {
                 pasajero.Pasaje = new Pasaje(partes[5], partes[6], partes[7]);
+            }
+            if (partes.Length > 8)
+            {
+                for (int i = 8; i < partes.Length; i++)
+                {
+                    if (!string.IsNullOrWhiteSpace(partes[i]))
+                    {
+                        double peso;
+                        if (double.TryParse(partes[i], out peso))
+                        {
+                            Equipaje equipaje = new Equipaje(peso);
+                            pasajero.Equipaje = equipaje;
+                            pasajero.agregarEquipaje(equipaje);
+                        }
+                    }
+                }
             }
             return pasajero;
         }
