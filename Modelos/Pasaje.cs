@@ -11,6 +11,20 @@ namespace CheckInApi.Modelos
         private string _tipoTarifa;
         private string _nroVuelo;
 
+          public int MaxEquipajePermitido
+        {
+            get
+            {
+                return TipoTarifa?.ToLower() switch
+                {
+                    "p" => 1, 
+                    "b" => 1, 
+                    "f" => 2, 
+                    "pe" => 3, 
+                    _ => 0
+                };
+            }
+        }
         public Pasaje(string tipoVuelo, string tipoTarifa, string nroVuelo)
         {
             if (tipoVuelo != "N" && tipoVuelo != "I")

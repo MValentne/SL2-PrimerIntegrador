@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using CheckInApi.Modelos.Exceptions;
@@ -45,25 +45,34 @@ namespace CheckInApi.Modelos
 
         // Definición de propiedades
 
-         public Pasaje? Pasaje { get; set; }
-
-        public IReadOnlyList<Equipaje> Equipajes => _equipajes;
-
-
-         public int MaxEquipajePermitido
+         public Pasaje? Pasaje { get; set; }  
+        private double PesoMax
         {
             get
             {
-                return Pasaje?.TipoTarifa?.ToLower() switch
+                if (_equipajes.Count < 1)
                 {
-                    "p" => 1, 
-                    "b" => 1, 
-                    "f" => 2, 
-                    "pe" => 3, 
-                    _ => 0
-                };
+                    return Pasaje?.TipoVuelo?.ToLower() switch
+                    {
+                        "i" => 13.00,
+                        "n" => 8.00,
+                        _ => 0
+                    };
+                }
+                else
+                {
+                    return Pasaje?.TipoVuelo?.ToLower() switch
+                    {
+                        "i" => 18.00,
+                        "n" => 10.00,
+                        _ => 0
+                    };
+                }    
             }
-        }
+        }  
+        public IReadOnlyList<Equipaje> Equipajes => _equipajes;
+
+        
 
         public int Id { get; set; }
 
@@ -107,15 +116,22 @@ namespace CheckInApi.Modelos
 
         public void agregarEquipaje(Equipaje unEquipaje)
         {
+            
             if (Pasaje == null)
             {
                 throw new DatosInvalidosException("Pasaje", "No se puede agregar equipaje a un pasajero sin pasaje.");
             }
-            if (_equipajes.Count >= MaxEquipajePermitido)
+            if (_equipajes.Count >= Pasaje.MaxEquipajePermitido)
             {
-                throw new DatosInvalidosException("Equipaje", $"Se ha alcanzado el límite de equipaje '{MaxEquipajePermitido}' para este pasajero.");
+                throw new DatosInvalidosException("Equipaje", $"Se ha alcanzado el límite de equipaje '{Pasaje.MaxEquipajePermitido}' para este pasajero.");
+            }
+    
+            if (unEquipaje.PesoKg > PesoMax)
+            {
+                throw new PesoExcedidoException(unEquipaje.PesoKg,PesoMax,_equipajes.Count+1);
             }
             _equipajes.Add(unEquipaje);
+           
         }
 
         public override string ToString()

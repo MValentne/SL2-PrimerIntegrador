@@ -8,9 +8,9 @@ namespace CheckInApi.Modelos
     public class Equipaje
     {
         private double _pesoKg;
-
+        
         public Equipaje(double pesoKg)
-        {
+        {   
             if (pesoKg <= 0)
             {
                 throw new DatosInvalidosException("PesoKg", "El peso del equipaje debe ser mayor a cero.");
@@ -19,6 +19,5 @@ namespace CheckInApi.Modelos
         }
 
         public double PesoKg { get { return _pesoKg; } }
-
     }
 }
