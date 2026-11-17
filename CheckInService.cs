@@ -12,9 +12,9 @@ public class CheckInService
 
     // Pasaje
 
-    public Pasaje? ObtenerPasaje(int idPasajero)
+    public Pasaje? ObtenerPasaje(int idpasajero)
     {
-        Pasajero? pasajero = repositorio.ObtenerPorId(idPasajero);
+        Pasajero? pasajero = repositorio.ObtenerPorId(idpasajero);
         if (pasajero == null)
         {
             return null;
@@ -22,9 +22,9 @@ public class CheckInService
         return pasajero.Pasaje;
     }
     
-    public (bool exito, string mensaje) AgregarPasaje(int idPasajero, PasajeRequest datos)
+    public (bool exito, string mensaje) AgregarPasaje(int idpasajero, PasajeRequest datos)
     {
-        Pasajero? pasajero = repositorio.ObtenerPorId(idPasajero);
+        Pasajero? pasajero = repositorio.ObtenerPorId(idpasajero);
         if (pasajero == null)
         {
             return (false, "Error al agregar el pasaje a un pasajero inexistente.");
