@@ -38,10 +38,10 @@ public class CheckInService
                 datos.NroVuelo ?? string.Empty
             );
         }
-        catch (DatosInvalidosException)
+        catch (DatosInvalidosException ex )
         {
             // Manejar la excepción según sea necesario, por ejemplo, registrarla o devolver un mensaje de error.
-            return (false, "Error al agregar el pasaje al pasajero.");
+            return (false, ex.Message);
         }
 
         pasajero.Pasaje = nuevo;

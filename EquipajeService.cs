@@ -32,10 +32,10 @@ public class EquipajeService
             Equipaje nuevo = new Equipaje(datos.Peso);
             pasajero.agregarEquipaje(nuevo);
         }
-        catch (DatosInvalidosException)
+        catch (DatosInvalidosException ex)
         {
             // Manejar la excepción según sea necesario, por ejemplo, registrarla o devolver un mensaje de error.
-            return (false, "Error al agregar el equipaje al pasajero.");
+            return (false, ex.Message);
         }
 
         bool exito = repositorio.Actualizar(pasajero);

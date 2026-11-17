@@ -128,7 +128,7 @@ namespace CheckInApi.Modelos
     
             if (unEquipaje.PesoKg > PesoMax)
             {
-                throw new PesoExcedidoException(unEquipaje.PesoKg,PesoMax,_equipajes.Count+1);
+                throw new DatosInvalidosException("Equipaje", $"El Peso del equipaje ingresado de '{unEquipaje.PesoKg}'kg supera el máximo establecido de {PesoMax} para este numero de item {(_equipajes.Count)+1} ");
             }
             _equipajes.Add(unEquipaje);
            
