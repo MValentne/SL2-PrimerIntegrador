@@ -44,9 +44,10 @@ public class PasajeroRepositoryArchivo : IPasajeroRepository
             try
             {
                 List<Pasajero> existentes = ObtenerTodos();
+                // Asignar un nuevo Id autoincremental basado en el último Id existente
                 if (existentes.Count > 0)
                 {
-                    pasajero.Id = existentes.Max(p => p.Id) + 1; // Asignar un nuevo Id
+                    pasajero.Id = existentes.Max(p => p.Id) + 1; 
                 }
                 else
                 {
