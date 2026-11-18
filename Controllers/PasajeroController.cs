@@ -52,9 +52,10 @@ public class PasajeroController : ControllerBase
     //     return Ok(pasajero);
     // }
 
-    [HttpPost]
+    [HttpPost] 
     public ActionResult Agregar([FromBody] PasajeroRequest pasajero)
     {
+        // llama a capa de servicio para agregar
         var (exito, mensaje) = servicio.Agregar(pasajero);
         if (!exito)
         {
@@ -71,7 +72,7 @@ public class PasajeroController : ControllerBase
         {
             return BadRequest(mensaje);
         }
-        return Ok(mensaje);
+        return Ok(mensaje); // 200 OK
     }
 
     // [HttpDelete("{documento}")]
@@ -88,6 +89,7 @@ public class PasajeroController : ControllerBase
     [HttpDelete("{id:int}")]
     public ActionResult Eliminar(int id)
     {
+        // Llama a la capa de servicio para eliminar
         var (exito, mensaje) = servicio.Eliminar(id);
         if (!exito)
         {
