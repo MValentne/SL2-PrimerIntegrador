@@ -4,8 +4,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// modificamos desde acá
 string path = Path.Combine(AppContext.BaseDirectory, "pasajeros.txt");
+
+// Inyeccion de dependencias
 builder.Services.AddScoped<IPasajeroRepository>(provider => new PasajeroRepositoryArchivo(path));
 builder.Services.AddScoped<PasajeroService>();
 builder.Services.AddScoped<CheckInService>();

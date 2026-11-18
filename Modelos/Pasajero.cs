@@ -45,8 +45,11 @@ namespace CheckInApi.Modelos
 
         // Definición de propiedades
 
-         public Pasaje? Pasaje { get; set; }  
-        private double PesoMax
+        public Pasaje? Pasaje { get; set; }
+
+        // Valida el peso maximo permitido segun el tipo de vuelo 
+        // y la cantidad de equipajes  
+        private double PesoMax 
         {
             get
             {
@@ -70,9 +73,7 @@ namespace CheckInApi.Modelos
                 }    
             }
         }  
-        public IReadOnlyList<Equipaje> Equipajes => _equipajes;
-
-        
+        public IReadOnlyList<Equipaje> Equipajes => _equipajes;        
 
         public int Id { get; set; }
 
@@ -80,6 +81,7 @@ namespace CheckInApi.Modelos
         {
             get { return _nombre; }
             set {
+                // Validación para que no se pueda asignar un valor vacío
                 if (value != String.Empty) { 
                     _nombre = value;
                 }
@@ -134,6 +136,7 @@ namespace CheckInApi.Modelos
            
         }
 
+        // Serializacion de un pasajero
         public override string ToString()
         {
             return $"{Id}|{Nombre}|{Apellido}|{Documento}|{PasajeroFrecuente}" +
@@ -142,6 +145,7 @@ namespace CheckInApi.Modelos
 
         }
 
+        // Deserializacion de un pasajero
         public static Pasajero FromString(string linea)
         {
             string[] partes = linea.Split('|');
@@ -163,6 +167,5 @@ namespace CheckInApi.Modelos
             }
             return pasajero;
         }
-
         }
 }
