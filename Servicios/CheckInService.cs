@@ -110,6 +110,8 @@ public class CheckInService
         }
 
         pasajero.Pasaje = null;
+        // Sin pasaje no hay reglas de equipaje válidas: se eliminan junto con él.
+        pasajero.eliminarTodosLosEquipajes();
         bool exito = repositorio.Actualizar(pasajero);
         if (!exito)
         {
@@ -117,7 +119,7 @@ public class CheckInService
         }
         else
         {
-            return (true, "Pasaje eliminado correctamente del pasajero.");
+            return (true, "Pasaje eliminado correctamente del pasajero. Se eliminaron los equipajes existentes.");
         }
     }
 }

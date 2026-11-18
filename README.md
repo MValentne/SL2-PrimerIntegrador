@@ -48,7 +48,9 @@ El nombre no puede estar vacío. Para `PUT`, el documento debe corresponder a un
 | `GET` | `/api/Pasaje/{idPasajero}` | Obtiene el pasaje del pasajero. Devuelve `404` si no tiene. |
 | `POST` | `/api/Pasaje/{idPasajero}` | Agrega un pasaje. |
 | `PUT` | `/api/Pasaje/{idPasajero}` | Actualiza el pasaje y elimina todos los equipajes del pasajero, porque cambian las reglas de peso y cantidad. |
-| `DELETE` | `/api/Pasaje/{idPasajero}` | Elimina el pasaje. |
+| `DELETE` | `/api/Pasaje/{idPasajero}` | Elimina el pasaje y todos sus equipajes. |
+
+Los ids de los equipajes son consecutivos: al borrar uno se renumera el resto y el próximo equipaje ocupa el primer id libre.
 | `GET` | `/api/Equipaje/{idPasajero}` | Obtiene los equipajes del pasajero, con su `id` y `pesoKg`. |
 | `POST` | `/api/Equipaje/{idPasajero}` | Agrega un equipaje con `{"peso": 10}`. |
 | `PUT` | `/api/Equipaje/{idPasajero}/{idEquipaje}` | Modifica el peso de ese equipaje. Devuelve `400` si supera el máximo permitido. |

@@ -72,6 +72,12 @@ content-type:application/json
 
 ###
 
+# Eliminar el pasaje: también se eliminan sus equipajes
+DELETE {{CheckInApi_HostAddress}}/api/Pasaje/{{id}}
+Accept: application/json
+
+###
+
 # Obtener los equipajes de un pasajero (incluye el id de cada equipaje)
 GET {{CheckInApi_HostAddress}}/api/Equipaje/{{id}}
 Accept: application/json
