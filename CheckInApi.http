@@ -1,6 +1,7 @@
 @CheckInApi_HostAddress = http://localhost:5129
 @documento = 12345678
 @id = 2
+@idEquipaje = 1
 
 # Obtener todos los pasajeros
 GET {{CheckInApi_HostAddress}}/api/Pasajero
@@ -50,9 +51,53 @@ Accept: application/json
 
 POST {{CheckInApi_HostAddress}}/api/Pasaje/{{id}}
 content-type:application/json
-  
+
 {
   "TipoVuelo": "I",
   "TipoTarifa": "P",
   "NroVuelo": "1234"
 }
+
+###
+
+# Actualizar el pasaje: se eliminan los equipajes del pasajero porque cambian las reglas
+PUT {{CheckInApi_HostAddress}}/api/Pasaje/{{id}}
+content-type:application/json
+
+{
+  "TipoVuelo": "N",
+  "TipoTarifa": "PE",
+  "NroVuelo": "4321"
+}
+
+###
+
+# Obtener los equipajes de un pasajero (incluye el id de cada equipaje)
+GET {{CheckInApi_HostAddress}}/api/Equipaje/{{id}}
+Accept: application/json
+
+###
+
+# Agregar equipaje a un pasajero
+POST {{CheckInApi_HostAddress}}/api/Equipaje/{{id}}
+content-type:application/json
+
+{
+  "peso": 10
+}
+
+###
+
+# Modificar el peso de un equipaje. Si supera el máximo permitido devuelve 400
+PUT {{CheckInApi_HostAddress}}/api/Equipaje/{{id}}/{{idEquipaje}}
+content-type:application/json
+
+{
+  "peso": 12
+}
+
+###
+
+# Eliminar un equipaje por su id
+DELETE {{CheckInApi_HostAddress}}/api/Equipaje/{{id}}/{{idEquipaje}}
+Accept: application/json

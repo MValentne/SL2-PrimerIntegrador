@@ -49,30 +49,25 @@ namespace CheckInApi.Modelos
 
         // Valida el peso maximo permitido segun el tipo de vuelo 
         // y la cantidad de equipajes  
-        private double PesoMax 
+        private double PesoMax(bool esPrimerItem)
         {
-            get
+            if (esPrimerItem)
             {
-                if (_equipajes.Count < 1)
+                return Pasaje?.TipoVuelo?.ToLower() switch
                 {
-                    return Pasaje?.TipoVuelo?.ToLower() switch
-                    {
-                        "i" => 13.00,
-                        "n" => 8.00,
-                        _ => 0
-                    };
-                }
-                else
-                {
-                    return Pasaje?.TipoVuelo?.ToLower() switch
-                    {
-                        "i" => 18.00,
-                        "n" => 10.00,
-                        _ => 0
-                    };
-                }    
+                    "i" => 13.00,
+                    "n" => 8.00,
+                    _ => 0
+                };
             }
-        }  
+
+            return Pasaje?.TipoVuelo?.ToLower() switch
+            {
+                "i" => 18.00,
+                "n" => 10.00,
+                _ => 0
+            };
+        }
         public IReadOnlyList<Equipaje> Equipajes => _equipajes;        
 
         public int Id { get; set; }
@@ -128,12 +123,47 @@ namespace CheckInApi.Modelos
                 throw new DatosInvalidosException("Equipaje", $"Se ha alcanzado el límite de equipaje '{Pasaje.MaxEquipajePermitido}' para este pasajero.");
             }
     
-            if (unEquipaje.PesoKg > PesoMax)
+            double pesoMax = PesoMax(_equipajes.Count == 0);
+            if (unEquipaje.PesoKg > pesoMax)
             {
-                throw new DatosInvalidosException("Equipaje", $"El Peso del equipaje ingresado de '{unEquipaje.PesoKg}'kg supera el máximo establecido de {PesoMax} para este numero de item {(_equipajes.Count)+1} ");
+                throw new DatosInvalidosException("Equipaje", $"El Peso del equipaje ingresado de '{unEquipaje.PesoKg}'kg supera el máximo establecido de {pesoMax} para este numero de item {(_equipajes.Count)+1} ");
+            }
+            if (unEquipaje.Id == 0)
+            {
+                unEquipaje.Id = _equipajes.Count == 0 ? 1 : _equipajes.Max(e => e.Id) + 1;
             }
             _equipajes.Add(unEquipaje);
-           
+            
+        }
+
+        public void eliminarEquipaje(Equipaje unEquipaje)
+        {
+            _equipajes.Remove(unEquipaje);
+        }
+
+        public void eliminarTodosLosEquipajes()
+        {
+            _equipajes.Clear();
+        }
+
+        public void actualizarPesoEquipaje(Equipaje unEquipaje, double pesoKg)
+        {
+            int indice = _equipajes.IndexOf(unEquipaje);
+            if (indice < 0)
+            {
+                throw new DatosInvalidosException("Equipaje", "El equipaje no pertenece al pasajero.");
+            }
+            if (Pasaje == null)
+            {
+                throw new DatosInvalidosException("Pasaje", "No se puede actualizar el equipaje de un pasajero sin pasaje.");
+            }
+
+            double pesoMax = PesoMax(indice == 0);
+            if (pesoKg > pesoMax)
+            {
+                throw new DatosInvalidosException("Equipaje", $"El Peso del equipaje ingresado de '{pesoKg}'kg supera el máximo establecido de {pesoMax} para este numero de item {(indice)+1} ");
+            }
+            unEquipaje.PesoKg = pesoKg;
         }
 
         // Serializacion de un pasajero
@@ -141,7 +171,7 @@ namespace CheckInApi.Modelos
         {
             return $"{Id}|{Nombre}|{Apellido}|{Documento}|{PasajeroFrecuente}" +
                    $"|{Pasaje?.TipoVuelo}|{Pasaje?.TipoTarifa}|{Pasaje?.NroVuelo}"+
-                   $"|{string.Join("|", _equipajes.ConvertAll(e => e.PesoKg.ToString()))}";
+                   $"|{string.Join("|", _equipajes.ConvertAll(e => $"{e.Id}:{e.PesoKg}"))}";
 
         }
 
@@ -160,9 +190,15 @@ namespace CheckInApi.Modelos
             }
             for (int i = 8; i < partes.Length; i++)
             {
-                if (double.TryParse(partes[i], out double peso))
+                string[] datosEquipaje = partes[i].Split(':');
+                // Formato anterior: solo el peso, el id se deriva del orden.
+                string peso = datosEquipaje.Length > 1 ? datosEquipaje[1] : datosEquipaje[0];
+                int idEquipaje = datosEquipaje.Length > 1 && int.TryParse(datosEquipaje[0], out int idGuardado)
+                    ? idGuardado
+                    : pasajero._equipajes.Count + 1;
+                if (double.TryParse(peso, out double pesoKg))
                 {
-                    pasajero._equipajes.Add(new Equipaje(peso));
+                    pasajero._equipajes.Add(new Equipaje(pesoKg, idEquipaje));
                 }
             }
             return pasajero;
