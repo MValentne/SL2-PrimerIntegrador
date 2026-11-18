@@ -130,7 +130,13 @@ namespace CheckInApi.Modelos
             }
             if (unEquipaje.Id == 0)
             {
-                unEquipaje.Id = _equipajes.Count == 0 ? 1 : _equipajes.Max(e => e.Id) + 1;
+                // Reutiliza el primer id libre en lugar de incrementar siempre.
+                int idDisponible = 1;
+                while (_equipajes.Any(e => e.Id == idDisponible))
+                {
+                    idDisponible++;
+                }
+                unEquipaje.Id = idDisponible;
             }
             _equipajes.Add(unEquipaje);
             
@@ -139,6 +145,15 @@ namespace CheckInApi.Modelos
         public void eliminarEquipaje(Equipaje unEquipaje)
         {
             _equipajes.Remove(unEquipaje);
+            renumerarEquipajes();
+        }
+
+        private void renumerarEquipajes()
+        {
+            for (int i = 0; i < _equipajes.Count; i++)
+            {
+                _equipajes[i].Id = i + 1;
+            }
         }
 
         public void eliminarTodosLosEquipajes()
