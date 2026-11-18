@@ -26,6 +26,7 @@ public class PasajeroService
         return repositorio.ObtenerPorId(id);
     }
 
+    // Service intenta agregar crear un nuevo pasajero
     public (bool exito, string mensaje) Agregar(PasajeroRequest pasajero)
     {
         string documento = pasajero.Documento ?? string.Empty;
@@ -33,6 +34,7 @@ public class PasajeroService
         Pasajero nuevoPasajero;
         try
         {
+            // El modelo de pasajero ya tiene algunas validaciones
             nuevoPasajero = new Pasajero(
                 pasajero.Nombre ?? string.Empty,
                 pasajero.Apellido ?? string.Empty,

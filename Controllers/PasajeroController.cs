@@ -8,7 +8,6 @@ public class PasajeroController : ControllerBase
     // la capa de negocio (servicio)
     private readonly PasajeroService servicio;
 
-
     public PasajeroController(PasajeroService servicio)
     {
         this.servicio = servicio;
