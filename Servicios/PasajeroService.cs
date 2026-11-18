@@ -65,6 +65,7 @@ public class PasajeroService
     public (bool exito, string mensaje) Actualizar(int Id, PasajeroRequest pasajero)
     {
         string documento = pasajero.Documento ?? string.Empty;
+        // Contacta con la interfaz de repositorio y ejecuta ObtenerPorDocumento 
         Pasajero? pasajeroExistente = repositorio.ObtenerPorDocumento(documento);
         if (pasajeroExistente == null && pasajeroExistente?.Id != Id)
         {
@@ -74,6 +75,7 @@ public class PasajeroService
         Pasajero pasajeroActualizado;
         try
         {
+            // Intentamos crear nuevo pasajero
             pasajeroActualizado = new Pasajero(
                 pasajero.Nombre ?? string.Empty,
                 pasajero.Apellido ?? string.Empty,
