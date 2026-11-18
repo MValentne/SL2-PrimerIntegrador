@@ -41,13 +41,26 @@ El cuerpo de `POST` y `PUT` es JSON con estos campos:
 
 El nombre no puede estar vacío. Para `PUT`, el documento debe corresponder a un pasajero existente.
 
+## Endpoints de pasaje y equipaje
+
+| Método | Ruta | Descripción |
+| --- | --- | --- |
+| `GET` | `/api/Pasaje/{idPasajero}` | Obtiene el pasaje del pasajero. Devuelve `404` si no tiene. |
+| `POST` | `/api/Pasaje/{idPasajero}` | Agrega un pasaje. |
+| `PUT` | `/api/Pasaje/{idPasajero}` | Actualiza el pasaje y elimina todos los equipajes del pasajero, porque cambian las reglas de peso y cantidad. |
+| `DELETE` | `/api/Pasaje/{idPasajero}` | Elimina el pasaje. |
+| `GET` | `/api/Equipaje/{idPasajero}` | Obtiene los equipajes del pasajero, con su `id` y `pesoKg`. |
+| `POST` | `/api/Equipaje/{idPasajero}` | Agrega un equipaje con `{"peso": 10}`. |
+| `PUT` | `/api/Equipaje/{idPasajero}/{idEquipaje}` | Modifica el peso de ese equipaje. Devuelve `400` si supera el máximo permitido. |
+| `DELETE` | `/api/Equipaje/{idPasajero}/{idEquipaje}` | Elimina ese equipaje. |
+
 ## Probar la API desde VS Code
 
 El archivo [CheckInApi.http](./CheckInApi.http) contiene ejemplos para probar los endpoints anteriores. Para ejecutarlos desde VS Code, instala la extensión [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), inicia la API con el comando indicado en **Ejecutar** y selecciona **Send Request** sobre la petición que quieras probar. No es necesario usar `curl`.
 
 ## Persistencia
 
-El repositorio de archivo guarda los pasajeros en `pasajeros.txt`, ubicado en el directorio de salida de la aplicación (`AppContext.BaseDirectory`). En una ejecución local típica, ese directorio está debajo de `bin/Debug/net10.0/`. El archivo usa una línea por pasajero y `|` como separador entre campos.
+El repositorio de archivo guarda los pasajeros en `pasajeros.txt`, ubicado en el directorio de salida de la aplicación (`AppContext.BaseDirectory`). En una ejecución local típica, ese directorio está debajo de `bin/Debug/net10.0/`. El archivo usa una línea por pasajero y `|` como separador entre campos. Cada equipaje se guarda como `id:peso` (por ejemplo, `1:10|2:15`); las líneas antiguas con solo el peso siguen leyéndose y reciben un `id` según su orden.
 
 ## Estado de implementación
 

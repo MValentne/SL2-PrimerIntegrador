@@ -77,6 +77,9 @@ public class CheckInService
                 datos.NroVuelo ?? string.Empty
             );
             pasajero.Pasaje = pasajeActualizado;
+            
+            // El nuevo pasaje cambia las reglas de peso y cantidad: los equipajes actuales dejan de ser válidos.
+            pasajero.eliminarTodosLosEquipajes();
         }
         catch (DatosInvalidosException ex)
         {
@@ -90,7 +93,7 @@ public class CheckInService
         }
         else
         {
-            return (true, "Pasaje actualizado correctamente del pasajero.");
+            return (true, "Pasaje actualizado correctamente del pasajero. Se eliminaron los equipajes existentes.");
         }
     }
 
