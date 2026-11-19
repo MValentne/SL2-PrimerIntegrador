@@ -38,6 +38,11 @@ public class EquipajeService
             // Manejar la excepción según sea necesario, por ejemplo, registrarla o devolver un mensaje de error.
             return (false, ex.Message);
         }
+        catch (EquipajeException ex)
+        {
+            // PesoExcedidoException no deriva de DatosInvalidosException: sin este catch escaparía como 500.
+            return (false, ex.Message);
+        }
 
         bool exito = repositorio.Actualizar(pasajero);
         if (!exito)
@@ -100,6 +105,11 @@ public class EquipajeService
         catch (DatosInvalidosException ex)
         {
             // Manejar la excepción según sea necesario, por ejemplo, registrarla o devolver un mensaje de error.
+            return (false, ex.Message);
+        }
+        catch (EquipajeException ex)
+        {
+            // PesoExcedidoException no deriva de DatosInvalidosException: sin este catch escaparía como 500.
             return (false, ex.Message);
         }
 
