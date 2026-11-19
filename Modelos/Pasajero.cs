@@ -126,7 +126,7 @@ namespace CheckInApi.Modelos
             double pesoMax = PesoMax(_equipajes.Count == 0);
             if (unEquipaje.PesoKg > pesoMax)
             {
-                throw new DatosInvalidosException("Equipaje", $"El Peso del equipaje ingresado de '{unEquipaje.PesoKg}'kg supera el máximo establecido de {pesoMax} para este numero de item {(_equipajes.Count)+1} ");
+                throw new PesoExcedidoException(unEquipaje.PesoKg, pesoMax, _equipajes.Count + 1);
             }
             if (unEquipaje.Id == 0)
             {
@@ -176,7 +176,7 @@ namespace CheckInApi.Modelos
             double pesoMax = PesoMax(indice == 0);
             if (pesoKg > pesoMax)
             {
-                throw new DatosInvalidosException("Equipaje", $"El Peso del equipaje ingresado de '{pesoKg}'kg supera el máximo establecido de {pesoMax} para este numero de item {(indice)+1} ");
+                throw new PesoExcedidoException(pesoKg, pesoMax, indice + 1);
             }
             unEquipaje.PesoKg = pesoKg;
         }
